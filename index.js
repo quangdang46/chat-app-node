@@ -2,10 +2,16 @@ const express = require("express");
 const ehbs = require("express-handlebars");
 const startDB = require("./databases/connect");
 const bodyParser = require("body-parser");
+const router = require("./routes");
+
 const app = express();
 
 // connect db
 startDB();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static("public"));
 
 app.engine(
   "handlebars",
@@ -14,15 +20,11 @@ app.engine(
   })
 );
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 app.set("view engine", "handlebars");
-app.use(express.static("public"));
 app.set("views", "./views");
 
-app.get("/login", (req, res) => {
-  res.render("login");
-});
+// router
+app.use("/", router);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
