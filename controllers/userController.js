@@ -64,6 +64,7 @@ class userController {
   }
 
   static async renderHome(req, res, next) {
+    console.log(req.session.userData);
     res.render("home", { userData: req.session.userData });
   }
 }
