@@ -1,7 +1,11 @@
 const express = require("express");
 const ehbs = require("express-handlebars");
-
+const startDB = require("./databases/connect");
+const bodyParser = require("body-parser");
 const app = express();
+
+// connect db
+startDB();
 
 app.engine(
   "handlebars",
@@ -10,6 +14,8 @@ app.engine(
   })
 );
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.set("view engine", "handlebars");
 app.use(express.static("public"));
 app.set("views", "./views");
