@@ -1,13 +1,22 @@
+require("dotenv").config();
 const express = require("express");
 const ehbs = require("express-handlebars");
 const startDB = require("./databases/connect");
 const bodyParser = require("body-parser");
 const router = require("./routes");
+const session = require("express-session");
 
 const app = express();
 
 // connect db
 startDB();
+
+// session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+  })
+);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
