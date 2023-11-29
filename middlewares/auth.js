@@ -1,4 +1,4 @@
-const is_login = async (req, res, next) => {
+const is_login = (req, res, next) => {
   try {
     if (req.session.userData) {
       next();
@@ -11,7 +11,7 @@ const is_login = async (req, res, next) => {
   }
 };
 
-const is_logout = async (req, res, next) => {
+const is_logout = (req, res, next) => {
   try {
     if (req.session.userData) {
       res.redirect("/home");

@@ -5,9 +5,12 @@ const startDB = require("./databases/connect");
 const bodyParser = require("body-parser");
 const router = require("./routes");
 const session = require("express-session");
+const { createServer } = require("node:http");
+const { Server } = require("socket.io");
 
 const app = express();
-
+const server = createServer(app);
+const io = new Server(server);
 // connect db
 startDB();
 
@@ -34,7 +37,13 @@ app.set("views", "./views");
 
 // router
 app.use("/", router);
-
+const namespace = io.of("/chat");
+namespace.on("connection", (socket) => {
+  console.log("a user connected" + socket.id);
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });

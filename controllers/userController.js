@@ -64,8 +64,19 @@ class userController {
   }
 
   static async renderHome(req, res, next) {
-    console.log(req.session.userData);
-    res.render("home", { userData: req.session.userData });
+    try {
+      const users = await User.find({
+        _id: { $nin: [req.session.userData._id] },
+      });
+      const objUsers = users.map((user) => user.toObject());
+      // set header
+      res.render("home", {
+        userData: req.session.userData,
+        users: objUsers,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Internal server error" });
+    }
   }
 }
 

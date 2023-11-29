@@ -19,6 +19,9 @@ $(document).ready(function () {
           icon: "success",
           position: "top-right",
         });
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 500);
       },
       error: function (error) {
         $.toast({
