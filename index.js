@@ -7,6 +7,7 @@ const router = require("./routes");
 const session = require("express-session");
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
+const User = require("./models/User");
 
 const app = express();
 const server = createServer(app);
@@ -37,13 +38,24 @@ app.set("views", "./views");
 
 // router
 app.use("/", router);
-const namespace = io.of("/chat");
-namespace.on("connection", (socket) => {
-  console.log("a user connected" + socket.id);
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
+// Set up Socket.IO
+const chatNamespace = io.of("/chat");
+
+chatNamespace.on("connection", async (socket) => {
+  console.log(
+    "User connected to the chat namespace!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  );
+  const userId = socket.handshake.auth.token;
+  if (!userId) {
+    return socket.disconnect();
+  }
+  await User.findByIdAndUpdate({ _id: userId }, { $set: { online: true } });
+
+  socket.on("disconnect", async () => {
+    await User.findByIdAndUpdate({ _id: userId }, { $set: { online: false } });
+    console.log("User disconnected from the chat namespace");
   });
 });
-app.listen(3000, () => {
+server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });

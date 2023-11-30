@@ -66,4 +66,9 @@ $(document).ready(function () {
       },
     });
   });
+  const socket = io("/chat", {
+    auth: {
+      token: $(".idUser").val(),
+    },
+  });
 });
