@@ -399,7 +399,7 @@ $(document).ready(function () {
 
   $(".list-group-users").click(function (e) {
     const userId = $(this).attr("data-id");
-    $(".idReceive").val(userId);
+    $(".idReceiver").val(userId);
     // show infonation receive
     $.ajax({
       type: "POST",
@@ -422,7 +422,39 @@ $(document).ready(function () {
         });
       },
     });
-
-    // send chat
   });
+  // send chat
+  $(".chat-input-section").submit(function (e) {
+    e.preventDefault();
+    const message = $(".chat-input").val();
+    const idUserReceiver = $(".idReceiver").val();
+    const idSender = $(".idUser").val();
+
+    $.ajax({
+      type: "POST",
+      url: "/save-message",
+      dataType: "json",
+      data: { message, sender: idSender, receiver: idUserReceiver },
+      success: function (response) {
+        // socket.emit("client-send-message", {
+        //   message,
+        //   sender: idSender,
+        //   receiver: idUserReceiver,
+        // });
+        console.log(response.newChat.message);
+        $(".chat-input").val("");
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+      },
+    });
+  });
+
+  $(".chat-input").val("");
 });

@@ -9,10 +9,11 @@ class chatController {
         sender,
         receiver,
       });
-      await chat.save();
-      res.status(200).json({
+      const newChat = await chat.save();
+      res.status(200).send({
+        success: true,
         message: "Chat saved successfully",
-        chat,
+        newChat,
       });
     } catch (error) {
       next(error);
