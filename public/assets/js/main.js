@@ -1,4 +1,9 @@
 $(document).ready(function () {
+  // init userchat
+  $(".user-chat").hide();
+
+
+
   $("#registerForm").submit(function (e) {
     e.preventDefault();
     var fullname = $("#fullname").val();
@@ -398,6 +403,8 @@ $(document).ready(function () {
   };
 
   $(".list-group-users").click(function (e) {
+    $(".user-chat").show(1000);
+
     const userId = $(this).attr("data-id");
     $(".idReceiver").val(userId);
     // show infonation receive
