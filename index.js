@@ -62,8 +62,16 @@ chatNamespace.on("connection", async (socket) => {
         { sender: sender, receiver: receiver },
         { sender: receiver, receiver: sender },
       ],
-    }).populate("sender", "fullname image").populate("receiver", "fullname image");
+    })
+      .populate("sender", "fullname image")
+      .populate("receiver", "fullname image");
     socket.emit("server-send-old-chat", chats);
+  });
+
+  // client-send-message
+  socket.on("client-send-message", async (data) => {
+
+    socket.broadcast.emit("server-load-new-chat", data);
   });
 
   socket.on("disconnect", async () => {

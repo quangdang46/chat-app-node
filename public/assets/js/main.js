@@ -435,43 +435,6 @@ $(document).ready(function () {
       receiver: userId,
     });
   });
-  // send chat
-  $(".chat-input-section").submit(function (e) {
-    e.preventDefault();
-    const message = $(".chat-input").val();
-    const idUserReceiver = $(".idReceiver").val();
-    const idSender = $(".idUser").val();
-
-    $.ajax({
-      type: "POST",
-      url: "/save-message",
-      dataType: "json",
-      data: { message, sender: idSender, receiver: idUserReceiver },
-      success: function (response) {
-        // socket.emit("client-send-message", {
-        //   message,
-        //   sender: idSender,
-        //   receiver: idUserReceiver,
-        // });
-        console.log(response.newChat.message);
-        $(".chat-input").val("");
-      },
-      error: function (error) {
-        $.toast({
-          heading: "Error",
-          text: error.responseJSON.message,
-          showHideTransition: "fade",
-          icon: "error",
-          position: "top-right",
-        });
-      },
-    });
-  });
-
-  $(".chat-input").val("");
-
-  // old chat
-  // server-send-old-chat
 
   const templateChat = ({ user, message, is_sender, time }) => {
     return `<li class="${!is_sender && "right"}">
@@ -525,6 +488,70 @@ $(document).ready(function () {
               </div>
             </li>`;
   };
+
+  // send chat
+  $(".chat-input-section").submit(function (e) {
+    e.preventDefault();
+    const message = $(".chat-input").val();
+    const idUserReceiver = $(".idReceiver").val();
+    const idSender = $(".idUser").val();
+
+    $.ajax({
+      type: "POST",
+      url: "/save-message",
+      dataType: "json",
+      data: { message, sender: idSender, receiver: idUserReceiver },
+      success: function (response) {
+        $(".chat-input").val("");
+        const chat = response.newChat;
+        console.log(chat);
+        const is_sender = chat.sender._id == $(".idUser").val();
+        $(".chat-user-container").append(
+          templateChat({
+            user: is_sender ? chat.sender : chat.receiver,
+            message: chat.message,
+            is_sender,
+            time: formatTime(chat.createdAt),
+          })
+        );
+
+        // emit new chat
+        socket.emit("client-send-message", chat);
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+      },
+    });
+  });
+
+  $(".chat-input").val("");
+
+  // server-load-new-chat
+  socket.on("server-load-new-chat", (chat) => {
+    const idSender = $(".idUser").val();
+    const idReceiver = $(".idReceiver").val();
+
+    const { sender, receiver } = chat;
+    if (idSender === receiver._id && idReceiver === sender._id) {
+      $(".chat-user-container").append(
+        templateChat({
+          user: sender,
+          message: chat.message,
+          is_sender: false,
+          time: formatTime(chat.createdAt),
+        })
+      );
+    }
+  });
+
+  // old chat
+  // server-send-old-chat
 
   const formatTime = (time) => {
     return new Date(time).toLocaleTimeString("en-US", {
