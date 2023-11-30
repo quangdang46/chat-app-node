@@ -51,8 +51,15 @@ chatNamespace.on("connection", async (socket) => {
   }
   await User.findByIdAndUpdate({ _id: userId }, { $set: { online: true } });
 
+  // client-send-status-online
+  socket.broadcast.emit("client-send-status-online", userId);
+
+
   socket.on("disconnect", async () => {
     await User.findByIdAndUpdate({ _id: userId }, { $set: { online: false } });
+    
+    // client-send-status-offline
+    socket.broadcast.emit("client-send-status-offline", userId);
     console.log("User disconnected from the chat namespace");
   });
 });

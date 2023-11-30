@@ -1438,3 +1438,13 @@
 [data-bs-theme=dark] .auth-logo .logo-light {
     display: block
 }
+
+
+/* code css */
+.status-user.online{
+    color: green!important;
+}
+
+.status-user.offine{
+    color: red!important;
+}

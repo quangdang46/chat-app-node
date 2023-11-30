@@ -66,9 +66,23 @@ $(document).ready(function () {
       },
     });
   });
+
+  ////////////////////////////////////////////////////////////////////////
   const socket = io("/chat", {
     auth: {
       token: $(".idUser").val(),
     },
+  });
+
+  // client-send-status-online
+  socket.on("client-send-status-online", (userId) => {
+    $(`#status-${userId}`).removeClass("offline");
+    $(`#status-${userId}`).addClass("online");
+  });
+
+  // client-send-status-offline
+  socket.on("client-send-status-offline", (userId) => {
+    $(`#status-${userId}`).removeClass("online");
+    $(`#status-${userId}`).addClass("offline");
   });
 });
