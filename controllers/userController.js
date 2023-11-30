@@ -78,6 +78,18 @@ class userController {
       return res.status(500).json({ message: "Internal server error" });
     }
   }
+
+  static async getProfile(req, res, next) {
+    try {
+      const idUserReceive = req.body.idUserReceive;
+      const userReceive = await User.findById(idUserReceive);
+      const objUserReceive = userReceive.toObject();
+      res.status(200).json({ userReceive: objUserReceive });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }
 
 module.exports = userController;

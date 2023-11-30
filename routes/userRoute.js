@@ -31,6 +31,8 @@ router.get("/logout", auth.is_login, userController.logout);
 
 router.get("/home",auth.is_login, userController.renderHome);
 
+router.post("/getprofile",auth.is_login, userController.getProfile);
+
 router.get("*", (req, res) => {
   res.redirect("/login");
 });
