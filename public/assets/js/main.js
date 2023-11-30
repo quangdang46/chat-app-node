@@ -449,9 +449,8 @@ $(document).ready(function () {
                       <p class="mb-0">
                         ${message}
                       </p>
-                      <p class="chat-time mb-0"><i
-                          class="ri-time-line align-middle"
-                        ></i>
+                      <p class="chat-time mb-0">
+                        <i class="fa-solid fa-clock align-middle"></i>
                         <span class="align-middle">${time}</span></p>
                     </div>
                     <div class="dropdown align-self-start">
@@ -463,23 +462,12 @@ $(document).ready(function () {
                         aria-haspopup="true"
                         aria-expanded="false"
                       >
-                        <i class="ri-more-2-fill"></i>
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Copy
-                          <i
-                            class="ri-file-copy-line float-end text-muted"
-                          ></i></a>
-                        <a class="dropdown-item" href="#">Save
-                          <i class="ri-save-line float-end text-muted"></i></a>
-                        <a class="dropdown-item" href="#">Forward
-                          <i
-                            class="ri-chat-forward-line float-end text-muted"
-                          ></i></a>
                         <a class="dropdown-item" href="#">Delete
-                          <i
-                            class="ri-delete-bin-line float-end text-muted"
-                          ></i></a>
+                          <i class="fa-solid fa-trash-can float-end text-muted"></i>
+                          </a>
                       </div>
                     </div>
                   </div>
