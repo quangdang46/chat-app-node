@@ -27,6 +27,20 @@ class chatController {
       next(error);
     }
   }
+
+  static async deleteChat(req, res, next) {
+    try {
+      const { idChat } = req.body;
+      const deletedChat = await Chat.findByIdAndDelete(idChat);
+      res.status(200).send({
+        success: true,
+        message: "Chat deleted successfully",
+        deletedChat,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = chatController;

@@ -4,5 +4,6 @@ const chatController = require("../controllers/chatController");
 const router = express.Router();
 
 router.post("/save-message", chatController.saveChat);
+router.post("/delete-message", chatController.deleteChat);
 
 module.exports = router;

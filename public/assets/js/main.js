@@ -436,8 +436,8 @@ $(document).ready(function () {
     });
   });
 
-  const templateChat = ({ user, message, is_sender, time }) => {
-    return `<li class="${!is_sender && "right"}">
+  const templateChat = ({ user, message, is_sender, time, chatId = "" }) => {
+    return `<li class="${!is_sender && "right"}" data-idChat="${chatId}">
               <div class="conversation-list">
                 <div class="chat-avatar">
                   <img src="images/${user.image}" alt="" />
@@ -453,7 +453,9 @@ $(document).ready(function () {
                         <i class="fa-solid fa-clock align-middle"></i>
                         <span class="align-middle">${time}</span></p>
                     </div>
-                    <div class="dropdown align-self-start">
+                    ${
+                      is_sender
+                        ? `<div class="dropdown align-self-start">
                       <a
                         class="dropdown-toggle"
                         href="#"
@@ -465,11 +467,18 @@ $(document).ready(function () {
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Delete
-                          <i class="fa-solid fa-trash-can float-end text-muted"></i>
+                        <a type="button" class="dropdown-item button-delete-chat" data-bs-toggle="modal" data-bs-target="#deleteModal" style="
+                              display: flex;
+                              align-items: center;
+                              justify-content: space-around;
+                          " data-idChat="${chatId}">Delete
+                          <i class="fa-solid fa-trash-can float-end text-muted" style="pointer-event :none"></i>
                           </a>
                       </div>
-                    </div>
+                    </div>`
+                        : ""
+                    }
+                    
                   </div>
                   <div class="conversation-name">${user.fullname}</div>
                 </div>
@@ -500,6 +509,7 @@ $(document).ready(function () {
             message: chat.message,
             is_sender,
             time: formatTime(chat.createdAt),
+            chatId: chat._id,
           })
         );
 
@@ -533,6 +543,7 @@ $(document).ready(function () {
           message: chat.message,
           is_sender: false,
           time: formatTime(chat.createdAt),
+          chatId: chat._id,
         })
       );
     }
@@ -558,8 +569,54 @@ $(document).ready(function () {
         message: chat.message,
         is_sender,
         time: formatTime(chat.createdAt),
+        chatId: chat._id,
       });
     });
     $(".chat-user-container").html(template);
+  });
+
+  $(document).on("click", ".button-delete-chat", function (e) {
+    e.preventDefault();
+    const idChat = $(this).attr("data-idChat");
+    $(".idChatDelete").val(idChat);
+  });
+  $(".btn-delete-chat").click(function (e) {
+    e.preventDefault();
+    const idChat = $(".idChatDelete").val();
+    $.ajax({
+      type: "POST",
+      url: "/delete-message",
+      dataType: "json",
+      data: { idChat },
+      success: function (response) {
+        $(`li[data-idChat=${idChat}]`).remove();
+        $("#deleteModal").modal("hide");
+
+        $.toast({
+          heading: "Success",
+          text: response.message,
+          showHideTransition: "slide",
+          icon: "success",
+          position: "top-right",
+        });
+
+        // emit delete chat
+        socket.emit("client-delete-chat", idChat);
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+      },
+    });
+  });
+
+  // server-delete-chat
+  socket.on("server-delete-chat", (idChat) => {
+    $(`li[data-idChat=${idChat}]`).remove();
   });
 });

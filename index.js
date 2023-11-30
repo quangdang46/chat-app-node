@@ -70,8 +70,12 @@ chatNamespace.on("connection", async (socket) => {
 
   // client-send-message
   socket.on("client-send-message", async (data) => {
-
     socket.broadcast.emit("server-load-new-chat", data);
+  });
+
+  // client-delete-chat
+  socket.on("client-delete-chat", async (data) => {
+    socket.broadcast.emit("server-delete-chat", data);
   });
 
   socket.on("disconnect", async () => {
