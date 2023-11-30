@@ -8,7 +8,7 @@ const session = require("express-session");
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
 const User = require("./models/User");
-
+const Chat = require("./models/Chat");
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
@@ -54,10 +54,21 @@ chatNamespace.on("connection", async (socket) => {
   // client-send-status-online
   socket.broadcast.emit("client-send-status-online", userId);
 
+  // client-send-id-send-receive
+  socket.on("client-send-id-send-receive", async (data) => {
+    const { sender, receiver } = data;
+    const chats = await Chat.find({
+      $or: [
+        { sender: sender, receiver: receiver },
+        { sender: receiver, receiver: sender },
+      ],
+    }).populate("sender", "fullname image").populate("receiver", "fullname image");
+    socket.emit("server-send-old-chat", chats);
+  });
 
   socket.on("disconnect", async () => {
     await User.findByIdAndUpdate({ _id: userId }, { $set: { online: false } });
-    
+
     // client-send-status-offline
     socket.broadcast.emit("client-send-status-offline", userId);
     console.log("User disconnected from the chat namespace");

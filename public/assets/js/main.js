@@ -2,8 +2,6 @@ $(document).ready(function () {
   // init userchat
   $(".user-chat").hide();
 
-
-
   $("#registerForm").submit(function (e) {
     e.preventDefault();
     var fullname = $("#fullname").val();
@@ -429,6 +427,13 @@ $(document).ready(function () {
         });
       },
     });
+
+    // emit old chat
+    const idUser = $(".idUser").val();
+    socket.emit("client-send-id-send-receive", {
+      sender: idUser,
+      receiver: userId,
+    });
   });
   // send chat
   $(".chat-input-section").submit(function (e) {
@@ -464,4 +469,82 @@ $(document).ready(function () {
   });
 
   $(".chat-input").val("");
+
+  // old chat
+  // server-send-old-chat
+
+  const templateChat = ({ user, message, is_sender, time }) => {
+    return `<li class="${!is_sender && "right"}">
+              <div class="conversation-list">
+                <div class="chat-avatar">
+                  <img src="images/${user.image}" alt="" />
+                </div>
+
+                <div class="user-chat-content">
+                  <div class="ctext-wrap">
+                    <div class="ctext-wrap-content">
+                      <p class="mb-0">
+                        ${message}
+                      </p>
+                      <p class="chat-time mb-0"><i
+                          class="ri-time-line align-middle"
+                        ></i>
+                        <span class="align-middle">${time}</span></p>
+                    </div>
+                    <div class="dropdown align-self-start">
+                      <a
+                        class="dropdown-toggle"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        <i class="ri-more-2-fill"></i>
+                      </a>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Copy
+                          <i
+                            class="ri-file-copy-line float-end text-muted"
+                          ></i></a>
+                        <a class="dropdown-item" href="#">Save
+                          <i class="ri-save-line float-end text-muted"></i></a>
+                        <a class="dropdown-item" href="#">Forward
+                          <i
+                            class="ri-chat-forward-line float-end text-muted"
+                          ></i></a>
+                        <a class="dropdown-item" href="#">Delete
+                          <i
+                            class="ri-delete-bin-line float-end text-muted"
+                          ></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="conversation-name">${user.fullname}</div>
+                </div>
+              </div>
+            </li>`;
+  };
+
+  const formatTime = (time) => {
+    return new Date(time).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+  };
+
+  socket.on("server-send-old-chat", (chats) => {
+    let template = "";
+    chats.forEach((chat) => {
+      const is_sender = chat.sender._id == $(".idUser").val();
+      template += templateChat({
+        user: is_sender ? chat.sender : chat.receiver,
+        message: chat.message,
+        is_sender,
+        time: formatTime(chat.createdAt),
+      });
+    });
+    $(".chat-user-container").html(template);
+  });
 });

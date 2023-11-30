@@ -1178,7 +1178,7 @@
     border-top-color: var(--bs-primary);
     left: 0;
     right: auto;
-    bottom: -10px
+    bottom: -8px
 }
 
 @media (max-width: 575.98px) {
