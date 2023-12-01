@@ -783,9 +783,9 @@ $(document).ready(function () {
           icon: "success",
           position: "top-right",
         });
-        // setTimeout(() => {
-        //   window.location.href = "/home";
-        // }, 1000);
+        setTimeout(() => {
+          window.location.href = "/home";
+        }, 1000);
         $("#addgroup-exampleModal").modal("hide");
 
         // add group to list group
@@ -962,6 +962,44 @@ $(document).ready(function () {
             window.location.href = "/home";
           }, 1000);
         }
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+      },
+    });
+  });
+
+  $(document).on("click", ".button-delete-group", function (e) {
+    e.preventDefault();
+    const idGroup = $(this).attr("data-id");
+    $(".idGroupDelete").val(idGroup);
+  });
+
+  $(".btn-delete-group").click(function (e) {
+    e.preventDefault();
+    const idGroup = $(".idGroupDelete").val();
+    $.ajax({
+      type: "POST",
+      url: "/delete-group",
+      dataType: "json",
+      data: { idGroup },
+      success: function (response) {
+        $(`li[data-id-group=${idGroup}]`).remove();
+        $("#deleteGroup").modal("hide");
+
+        $.toast({
+          heading: "Success",
+          text: response.message,
+          showHideTransition: "slide",
+          icon: "success",
+          position: "top-right",
+        });
       },
       error: function (error) {
         $.toast({

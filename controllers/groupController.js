@@ -1,5 +1,5 @@
 const Group = require("../models/Group");
-
+const Member = require("../models/Member");
 class groupController {
   static loadGroup(req, res, next) {}
 
@@ -49,6 +49,18 @@ class groupController {
         success: true,
         newGroup: newGroupObj,
       });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  static async deleteGroup(req, res, next) {
+    try {
+      const { idGroup } = req.body;
+      await Group.deleteOne({ _id: idGroup });
+      await Member.deleteMany({ group_id: idGroup });
+      res.status(200).json({ message: "success delete group", success: true });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
