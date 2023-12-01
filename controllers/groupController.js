@@ -65,6 +65,18 @@ class groupController {
   static async deleteGroup(req, res, next) {
     try {
       const { idGroup } = req.body;
+      // const { _id } = req.session.userData;
+      // if (!_id) {
+      //   res.status(401).json({ message: "Unauthorized", success: false });
+      // }
+      // const group = await Group.findOne({ _id: idGroup });
+      // if(group.owner_id != _id){
+      //   res.status(401).json({ message: "Your not owner,can't delete group", success: false });
+      // }else{
+      //   await Group.deleteOne({ _id: idGroup });
+      //   await Member.deleteMany({ group_id: idGroup });
+      //   res.status(200).json({ message: "success delete group", success: true });
+      // }
       await Group.deleteOne({ _id: idGroup });
       await Member.deleteMany({ group_id: idGroup });
       res.status(200).json({ message: "success delete group", success: true });
@@ -84,10 +96,10 @@ class groupController {
         const totalMember = await Member.countDocuments({ group_id: id });
         console.log(totalMember);
         const avilable = group.limit - totalMember;
-        const isJoiner = await Member.findOne({
+        const isJoiner = await Member.countDocuments({
           group_id: id,
           user_id: req.session.userData._id,
-        }).count();
+        });
 
         const isOwner = group.owner_id == req.session.userData._id;
         const groupObj = group.toObject();
@@ -101,6 +113,25 @@ class groupController {
           isOwner,
         });
       }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  static async joinGroup(req, res, next) {
+    try {
+      const { group_id } = req.body;
+      const { _id } = req.session.userData;
+
+      const member = new Member({
+        group_id,
+        user_id: _id,
+      });
+
+      await member.save();
+
+      res.status(200).json({ message: "success join group", success: true });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });

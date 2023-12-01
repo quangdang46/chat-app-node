@@ -995,16 +995,26 @@ $(document).ready(function () {
       dataType: "json",
       data: { idGroup },
       success: function (response) {
-        $(`li[data-id-group=${idGroup}]`).remove();
-        $("#deleteGroup").modal("hide");
+        if (response.success) {
+          $(`li[data-id-group=${idGroup}]`).remove();
+          $("#deleteGroup").modal("hide");
 
-        $.toast({
-          heading: "Success",
-          text: response.message,
-          showHideTransition: "slide",
-          icon: "success",
-          position: "top-right",
-        });
+          $.toast({
+            heading: "Success",
+            text: response.message,
+            showHideTransition: "slide",
+            icon: "success",
+            position: "top-right",
+          });
+        } else {
+          $.toast({
+            heading: "Error",
+            text: response.message,
+            showHideTransition: "fade",
+            icon: "error",
+            position: "top-right",
+          });
+        }
       },
       error: function (error) {
         $.toast({
@@ -1055,10 +1065,10 @@ $(document).ready(function () {
               }
               ${
                 isOwner
-                  ? `<h5>You are owner,so can't john group</h5>`
+                  ? `<h5>You are owner,so can't join group</h5>`
                   : isJoiner != 0
-                  ? `<h5>You are joiner,so can't john group</h5>`
-                  : `<button type="button" class="btn btn-primary btn-sm">John</button>`
+                  ? `<h5>You are joiner,so can't join group</h5>`
+                  : `<button type="button" class="btn btn-primary btn-sm button-join-group" value="${group._id}">Join Now</button>`
               }
             </div>
 
@@ -1095,6 +1105,46 @@ $(document).ready(function () {
             icon: "error",
             position: "top-right",
           });
+        }
+        console.log(response);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  });
+
+  $(document).on("click", ".button-join-group", function (e) {
+    e.preventDefault();
+    const idGroup = $(this).val();
+    $(this).text("Wai.....");
+    $(this).attr("disabled", "disabled");
+
+    $.ajax({
+      type: "POST",
+      url: "/join-group",
+      dataType: "json",
+      data: { group_id: idGroup },
+      success: function (response) {
+        if (response.success) {
+          $.toast({
+            heading: "Success",
+            text: response.message,
+            showHideTransition: "slide",
+            icon: "success",
+            position: "top-right",
+          });
+          location.reload();
+        } else {
+          $.toast({
+            heading: "Error",
+            text: response.message,
+            showHideTransition: "fade",
+            icon: "error",
+            position: "top-right",
+          });
+          $(this).text("Join Now");
+          $(this).removeAttr("disabled");
         }
         console.log(response);
       },
