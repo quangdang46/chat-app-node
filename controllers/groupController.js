@@ -8,7 +8,6 @@ class groupController {
       const { name, limit } = req.body;
       const { _id } = req.session.userData;
       const image = req.file ? req.file.filename : "group.jpg";
-      console.log({ name, limit, _id, image });
       const newGroup = new Group({
         owner_id: _id,
         name,

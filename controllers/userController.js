@@ -1,5 +1,5 @@
 const bycrypt = require("bcrypt");
-
+const mongoose = require("mongoose");
 const User = require("../models/User");
 const Group = require("../models/Group");
 
@@ -75,7 +75,6 @@ class userController {
       // group
       const groups = await Group.find({ owner_id: req.session.userData._id });
       const objGroups = groups.map((group) => group.toObject());
-      console.log(objGroups);
       res.render("home", {
         userData: req.session.userData,
         users: objUsers,
@@ -100,12 +99,46 @@ class userController {
 
   static async getMember(req, res, next) {
     try {
-      const user = await User.find({
-        _id: { $nin: [req.session.userData._id] },
-      });
-      const objUser = user.map((user) => user.toObject());
+      const idGroup = req.body.idGroup;
+      // const user = await User.find({
+      //   _id: { $nin: [req.session.userData._id] },
+      // });
+
+      const users = await User.aggregate([
+        {
+          $lookup: {
+            from: "members",
+            localField: "_id",
+            foreignField: "user_id",
+            as: "member",
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $eq: [
+                          "$group_id",
+                          new mongoose.Types.ObjectId(idGroup),
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          $match: {
+            _id: {
+              $nin: [new mongoose.Types.ObjectId(req.session.userData._id)],
+            },
+          },
+        },
+      ]);
       res.status(200).json({
-        users: objUser,
+        users,
         message: "success get member",
       });
     } catch (error) {

@@ -791,16 +791,16 @@ $(document).ready(function () {
 
   // add member to group
 
-
-  const templateMemberSelect = (member) => {
+  const templateMemberSelect = (member, isMember) => {
     return ` <li>
                                   <div class="form-check">
                                     <input
                                       type="checkbox"
                                       class="form-check-input"
                                       id="${member._id}"
-                                      checked=""
                                       value="${member._id}"
+                                      name="members"
+                                      ${isMember ? "checked" : ""}
                                     />
                                     <label
                                       class="form-check-label"
@@ -821,13 +821,15 @@ $(document).ready(function () {
       type: "POST",
       url: "/get-member",
       dataType: "json",
+      data: { idGroup },
       success: function (response) {
-        console.log(response.users);
         let template = "";
         response.users.forEach((user) => {
-          template += templateMemberSelect(user);
+          const isMember = user.member.length > 0;
+          template += templateMemberSelect(user, isMember);
         });
         $(".select-members").html(template);
+        console.log(response.users);
       },
       error: function (error) {
         $.toast({
@@ -837,6 +839,59 @@ $(document).ready(function () {
           icon: "error",
           position: "top-right",
         });
+      },
+    });
+  });
+
+  // add member to group
+
+  $(".addMemberForm").submit(function (e) {
+    e.preventDefault();
+
+    const idGroup = $(".idGroup").val();
+    const limit = $(".limitMember").val();
+
+    const formData = $(this).serializeArray();
+    const members = formData.map((member) => member.value);
+
+    $.ajax({
+      type: "POST",
+      url: "/add-members",
+      dataType: "json",
+      data: { idGroup, members, limit },
+      success: function (response) {
+        if (response.success) {
+          $.toast({
+            heading: "Success",
+            text: response.message,
+            showHideTransition: "slide",
+            icon: "success",
+            position: "top-right",
+          });
+          // add group to list group
+          // const newGroup = response.newGroup;
+          // $(`li[data-id=${idGroup}]`).replaceWith(templateGroup(newGroup));
+          // $(".select-members").html("");
+        } else {
+          $.toast({
+            heading: "Error",
+            text: response.message,
+            showHideTransition: "fade",
+            icon: "error",
+            position: "top-right",
+          });
+        }
+        $("#addMember").modal("hide");
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+        $(".select-members").html("");
       },
     });
   });

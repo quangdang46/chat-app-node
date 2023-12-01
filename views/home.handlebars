@@ -128,18 +128,14 @@
             aria-expanded="false"
           >
             <img
-              src="assets/images/users/avatar-1.jpg"
+              src="images/{{userData.image}}"
               alt=""
               class="profile-user rounded-circle"
             />
           </a>
           <div class="dropdown-menu">
-
-            <a class="dropdown-item" href="#">Setting
-              <i class="ri-settings-3-line float-end text-muted"></i></a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="auth-login.html">Log out
-              <i class="ri-logout-circle-r-line float-end text-muted"></i></a>
+            <a class="dropdown-item" href="logout">Log out
+              <i class="fa-solid fa-right-from-bracket"></i></a>
           </div>
         </li>
       </ul>
@@ -1665,7 +1661,7 @@
         ></button>
       </div>
       <div class="modal-body p-4">
-        <form>
+        <form class="addMemberForm">
           <input type="hidden" class="idGroup">
           <input type="hidden" class="limitMember">
           <div class="mb-4">
@@ -1705,20 +1701,7 @@
                           >
                             <div class="simplebar-content" style="padding: 0px">
                               <ul class="list-unstyled contact-list select-members">
-                                {{!-- <li>
-                                  <div class="form-check">
-                                    <input
-                                      type="checkbox"
-                                      class="form-check-input"
-                                      id="memberCheck1"
-                                      checked=""
-                                    />
-                                    <label
-                                      class="form-check-label"
-                                      for="memberCheck1"
-                                    >Albert Rodarte</label>
-                                  </div>
-                                </li> --}}
+                                
 
                               </ul>
 
@@ -1765,7 +1748,7 @@
             <button type="button" class="btn btn-link" data-bs-dismiss="modal">
               Close
             </button>
-            <button type="button" class="btn btn-primary">Add member</button>
+            <button type="submit" class="btn btn-primary">Add member</button>
           </div>
         </form>
       </div>
