@@ -1030,6 +1030,13 @@ $(document).ready(function () {
     });
     const idGroup = $(this).attr("data-id");
     const url = window.location.origin + "/share-group/" + idGroup;
-    console.log(url);
+
+    let temp=$("<input>");
+    $("body").append(temp);
+    temp.val(url).select();
+    document.execCommand("copy");
+    temp.remove();
+
+    
   });
 });
