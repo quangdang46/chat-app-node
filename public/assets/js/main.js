@@ -627,7 +627,6 @@ $(document).ready(function () {
     $(`li[data-idChat=${idChat}]`).remove();
   });
 
-
   // edit chat
   $(document).on("click", ".button-edit-chat", function (e) {
     e.preventDefault();
@@ -636,7 +635,6 @@ $(document).ready(function () {
 
     const message = $(`li[data-idChat=${idChat}] .message-data`).text();
     $(".msg-edit").val(message.trim());
-
   });
 
   $(".btn-edit-chat").click(function (e) {
@@ -680,6 +678,66 @@ $(document).ready(function () {
     $(`li[data-idChat=${idChat}] .message-data`).text(message);
   });
 
+  const templateGroup = (group) => {
+    return `<li>
+                    <div class="d-flex align-items-center">
+                      <div class="chat-user-img me-3 ms-0">
+                        <div class="avatar-xs">
+
+                          <img
+                            src="/images/${group.image}"
+                            alt="${group.name}}"
+                            class="avatar-title rounded-circle"
+                          />
+                        </div>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <h5
+                          class="text-truncate font-size-14 mb-0"
+                        >#${group.name}</h5>
+                      </div>
+                      <div class="dropdown">
+                        <a
+                          href="#"
+                          class="text-muted dropdown-toggle"
+                          data-bs-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end" style="">
+                          <a
+                            type="button"
+                            class="dropdown-item button-delete-group"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteGroup"
+                            style="display: flex; align-items: center; justify-content: space-around"
+                            data-id="${group._id}}" data-limit="${group.limit}}"
+                          >Delete
+                            <i
+                              class="fa-solid fa-trash-can float-end text-muted"
+                              style="pointer-event: none"
+                            ></i>
+                          </a>
+                          <a
+                            type="button"
+                            class="dropdown-item button-add-member"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addMember"
+                            style="display: flex; align-items: center; justify-content: space-around"
+                            data-id="${group._id}}" data-limit="${group.limit}}"
+                          >Add
+                            <i
+                              class="fa-solid fa-pen-to-square float-end text-muted"
+                              style="pointer-event: none"
+                            ></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </li>`;
+  };
 
   // group chat!!!!!!!!!!!!!!!!
   $("#form-group").submit(function (e) {
@@ -713,6 +771,11 @@ $(document).ready(function () {
         // setTimeout(() => {
         //   window.location.href = "/home";
         // }, 1000);
+        $("#addgroup-exampleModal").modal("hide");
+
+        // add group to list group
+        const newGroup = response.newGroup;
+        $(".list-group-chat").append(templateGroup(newGroup));
       },
       error: function (error) {
         $.toast({
@@ -724,8 +787,57 @@ $(document).ready(function () {
         });
       },
     });
+  });
+
+  // add member to group
 
 
+  const templateMemberSelect = (member) => {
+    return ` <li>
+                                  <div class="form-check">
+                                    <input
+                                      type="checkbox"
+                                      class="form-check-input"
+                                      id="${member._id}"
+                                      checked=""
+                                      value="${member._id}"
+                                    />
+                                    <label
+                                      class="form-check-label"
+                                      for="${member._id}"
+                                    >${member.fullname}</label>
+                                  </div>
+                                </li>`;
+  };
 
+  $(document).on("click", ".button-add-member", function (e) {
+    e.preventDefault();
+    const idGroup = $(this).attr("data-id");
+    const limit = $(this).attr("data-limit");
+    $(".idGroup").val(idGroup);
+    $(".limitMember").val(limit);
+
+    $.ajax({
+      type: "POST",
+      url: "/get-member",
+      dataType: "json",
+      success: function (response) {
+        console.log(response.users);
+        let template = "";
+        response.users.forEach((user) => {
+          template += templateMemberSelect(user);
+        });
+        $(".select-members").html(template);
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+      },
+    });
   });
 });

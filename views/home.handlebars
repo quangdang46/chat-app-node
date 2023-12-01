@@ -992,7 +992,7 @@
 
               {{#if groups}}
                 {{#each groups}}
-                  <li>
+                  <li >
                     <div class="d-flex align-items-center">
                       <div class="chat-user-img me-3 ms-0">
                         <div class="avatar-xs">
@@ -1022,11 +1022,11 @@
                         <div class="dropdown-menu dropdown-menu-end" style="">
                           <a
                             type="button"
-                            class="dropdown-item button-delete-chat"
+                            class="dropdown-item button-delete-group"
                             data-bs-toggle="modal"
                             data-bs-target="#deleteGroup"
                             style="display: flex; align-items: center; justify-content: space-around"
-                            data-idChat="${chatId}"
+                            data-id="{{this._id}}" data-limit="{{this.limit}}"
                           >Delete
                             <i
                               class="fa-solid fa-trash-can float-end text-muted"
@@ -1035,11 +1035,11 @@
                           </a>
                           <a
                             type="button"
-                            class="dropdown-item button-edit-chat"
+                            class="dropdown-item button-add-member"
                             data-bs-toggle="modal"
                             data-bs-target="#addMember"
                             style="display: flex; align-items: center; justify-content: space-around"
-                            data-idChat="${chatId}"
+                            data-id="{{this._id}}" data-limit="{{this.limit}}"
                           >Add
                             <i
                               class="fa-solid fa-pen-to-square float-end text-muted"
@@ -1655,7 +1655,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title font-size-16" id="addgroup-exampleModalLabel">
-          Create New Group
+          Add new member
         </h5>
         <button
           type="button"
@@ -1666,6 +1666,8 @@
       </div>
       <div class="modal-body p-4">
         <form>
+          <input type="hidden" class="idGroup">
+          <input type="hidden" class="limitMember">
           <div class="mb-4">
             <label class="form-label">Group Members</label>
             <div class="mb-3">
@@ -1702,8 +1704,8 @@
                             style="height: auto; overflow: hidden"
                           >
                             <div class="simplebar-content" style="padding: 0px">
-                              <ul class="list-unstyled contact-list">
-                                <li>
+                              <ul class="list-unstyled contact-list select-members">
+                                {{!-- <li>
                                   <div class="form-check">
                                     <input
                                       type="checkbox"
@@ -1716,21 +1718,8 @@
                                       for="memberCheck1"
                                     >Albert Rodarte</label>
                                   </div>
-                                </li>
+                                </li> --}}
 
-                                <li>
-                                  <div class="form-check">
-                                    <input
-                                      type="checkbox"
-                                      class="form-check-input"
-                                      id="memberCheck2"
-                                    />
-                                    <label
-                                      class="form-check-label"
-                                      for="memberCheck2"
-                                    >Allison Etter</label>
-                                  </div>
-                                </li>
                               </ul>
 
                             </div>
@@ -1776,7 +1765,7 @@
             <button type="button" class="btn btn-link" data-bs-dismiss="modal">
               Close
             </button>
-            <button type="button" class="btn btn-primary">Create Groups</button>
+            <button type="button" class="btn btn-primary">Add member</button>
           </div>
         </form>
       </div>

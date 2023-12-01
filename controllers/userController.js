@@ -97,6 +97,22 @@ class userController {
       res.status(500).json({ message: "Internal server error" });
     }
   }
+
+  static async getMember(req, res, next) {
+    try {
+      const user = await User.find({
+        _id: { $nin: [req.session.userData._id] },
+      });
+      const objUser = user.map((user) => user.toObject());
+      res.status(200).json({
+        users: objUser,
+        message: "success get member",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
 }
 
 module.exports = userController;
