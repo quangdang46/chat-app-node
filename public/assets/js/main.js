@@ -707,7 +707,12 @@ $(document).ready(function () {
                           <i class="fa-solid fa-ellipsis-vertical"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end" style="">
-                          <a
+                          <a type="button" class="dropdown-item button-copy-group"
+                            style="display: flex; align-items: center; justify-content: space-around" data-id="{{this._id}}"
+                            >Copy 
+                            <i class="fa-solid fa-copy float-end text-muted" style="pointer-event: none"></i>
+                          </a>  
+                        <a
                             type="button"
                             class="dropdown-item button-delete-group"
                             data-bs-toggle="modal"
@@ -1011,5 +1016,20 @@ $(document).ready(function () {
         });
       },
     });
+  });
+
+  // copy link group
+  $(document).on("click", ".button-copy-group", function (e) {
+    e.preventDefault();
+    $.toast({
+      heading: "Success",
+      text: "Copy link group success!",
+      showHideTransition: "slide",
+      icon: "success",
+      position: "top-right",
+    });
+    const idGroup = $(this).attr("data-id");
+    const url = window.location.origin + "/share-group/" + idGroup;
+    console.log(url);
   });
 });
