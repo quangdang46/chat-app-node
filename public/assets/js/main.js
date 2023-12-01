@@ -1021,22 +1021,86 @@ $(document).ready(function () {
   // copy link group
   $(document).on("click", ".button-copy-group", function (e) {
     e.preventDefault();
+    const idGroup = $(this).attr("data-id");
     $.toast({
       heading: "Success",
-      text: "Copy link group success!",
+      text: `Copy id group ${idGroup} success!`,
       showHideTransition: "slide",
       icon: "success",
       position: "top-right",
     });
-    const idGroup = $(this).attr("data-id");
-    const url = window.location.origin + "/share-group/" + idGroup;
 
-    let temp=$("<input>");
+    let temp = $("<input>");
     $("body").append(temp);
-    temp.val(url).select();
+    temp.val(idGroup).select();
     document.execCommand("copy");
     temp.remove();
+  });
 
-    
+  const themeSearchGroup = (data) => {
+    const { group, isJoiner, isOwner, totalMember, avilable } = data;
+    return `<li data-id-group="">
+            <div class="d-flex align-items-center justify-content-center flex-column ">
+              <div class="rounded-2 p-1 overflow-hidden" style="width: 100%;height: 200px">
+                <img src="/images/${
+                  group.image
+                }" alt="" class="w-100 h-100 overflow-hidden rounded-2">
+              </div>
+              <h2>${group.name}</h2>
+              <h5>Total ${totalMember} members</h5>
+              ${
+                avilable !== 0
+                  ? `<h5>Aviable ${avilable} members</h5>`
+                  : `<h5>Your group full</h5>`
+              }
+              ${
+                isOwner
+                  ? `<h5>You are owner,so can't john group</h5>`
+                  : isJoiner != 0
+                  ? `<h5>You are joiner,so can't john group</h5>`
+                  : `<button type="button" class="btn btn-primary btn-sm">John</button>`
+              }
+            </div>
+
+          </li>`;
+  };
+
+  $(".input-search-group").keyup(function (e) {
+    var idGroup = $(this).val();
+    $.ajax({
+      type: "POST",
+      url: "/search-group",
+      dataType: "json",
+      data: { id: idGroup },
+      success: function (response) {
+        // let template = "";
+        // response.groups.forEach((group) => {
+        //   template += templateGroup(group);
+        // });
+        // $(".list-group-chat").html(template);
+        if (response.success) {
+          $.toast({
+            heading: "Success",
+            text: "Search group success!",
+            showHideTransition: "slide",
+            icon: "success",
+            position: "top-right",
+          });
+          $(".list-search-group").html(themeSearchGroup(response));
+        } else {
+          $.toast({
+            heading: "Error",
+            text: "Search group error!",
+            showHideTransition: "fade",
+            icon: "error",
+            position: "top-right",
+          });
+        }
+        console.log(response);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
   });
 });

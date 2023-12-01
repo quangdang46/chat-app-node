@@ -68,7 +68,11 @@
             <i class="fa-solid fa-users-rectangle"></i>
           </a>
         </li>
-
+        <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Search group">
+          <a class="nav-link" id="pills-groups-tab" data-bs-toggle="pill" href="#pills-search-group" role="tab">
+            <i class="fa-brands fa-searchengin"></i>
+          </a>
+        </li>
         <li
           class="nav-item"
           data-bs-toggle="tooltip"
@@ -460,7 +464,7 @@
         <div>
           <div class="px-4 pt-4">
             <h4 class="mb-4">Chats</h4>
-            <div class="search-box chat-search-box">
+            {{!-- <div class="search-box chat-search-box">
               <div class="input-group mb-3 rounded-3">
                 <span
                   class="input-group-text text-muted bg-light pe-1 ps-3"
@@ -476,7 +480,7 @@
                   aria-describedby="basic-addon1"
                 />
               </div>
-            </div>
+            </div> --}}
             <!-- Search Box-->
           </div>
           <!-- .p-4 -->
@@ -856,7 +860,7 @@
       >
         <!-- Start Groups content -->
         <div>
-          <div class="p-4">
+          <div class="p-4 pb-0 ">
             <div class="user-chat-nav float-end">
               <div
                 data-bs-toggle="tooltip"
@@ -961,28 +965,11 @@
             </div>
             <!-- End add group Modal -->
 
-            <div class="search-box chat-search-box">
-              <div class="input-group rounded-3">
-                <span
-                  class="input-group-text text-muted bg-light pe-1 ps-3"
-                  id="basic-addon1"
-                >
-                  <i class="ri-search-line search-icon font-size-18"></i>
-                </span>
-                <input
-                  type="text"
-                  class="form-control bg-light"
-                  placeholder="Search groups..."
-                  aria-label="Search groups..."
-                  aria-describedby="basic-addon1"
-                />
-              </div>
-            </div>
             <!-- Search Box-->
           </div>
 
           <!-- Start chat-group-list -->
-          <div class="p-4 chat-message-list chat-group-list" data-simplebar>
+          <div class="p-2 chat-message-list chat-group-list" data-simplebar>
 
             <ul class="list-unstyled contact-list list-group-chat">
 
@@ -1079,6 +1066,54 @@
         <!-- End Groups content -->
       </div>
       <!-- End groups tab-pane -->
+
+      {{!-- search group --}}
+  <div class="tab-pane" id="pills-search-group" role="tabpanel" aria-labelledby="pills-groups-tab">
+    <!-- Start Groups content -->
+    <div>
+      <div class="p-4">
+
+        <h4 class="mb-4">Search Groups</h4>
+  
+  
+        <div class="search-box chat-search-box">
+          <div class="input-group rounded-3">
+            <span class="input-group-text text-muted bg-light pe-1 ps-3" id="basic-addon1">
+              <i class="ri-search-line search-icon font-size-18"></i>
+            </span>
+            <input type="text" class="form-control bg-light input-search-group" placeholder="Search groups..." aria-label="Search groups..."
+              aria-describedby="basic-addon1" />
+          </div>
+        </div>
+        <!-- Search Box-->
+      </div>
+  
+      <!-- Start chat-group-list -->
+      <div class="p-4 chat-message-list chat-group-list" data-simplebar>
+  
+        <ul class="list-unstyled contact-list list-search-group">
+  
+       
+          {{!-- <li data-id-group="">
+            <div class="d-flex align-items-center justify-content-center flex-column ">
+              <div class="rounded-2 p-1 overflow-hidden" style="width: 100%;height: 200px">
+                <img src="https://source.unsplash.com/random" alt="" class="w-100 h-100 overflow-hidden rounded-2">
+              </div>
+              <h2>asdadasasd</h2>
+              <h5>12 member</h5>
+              <h5>avariaasdsd 12 member</h5>
+              <button type="button" class="btn btn-primary btn-sm">John</button>
+            </div>
+
+          </li> --}}
+  
+  
+        </ul>
+      </div>
+      <!-- End chat-group-list -->
+    </div>
+    <!-- End Groups content -->
+  </div>
 
       <!-- Start settings tab-pane -->
       <div
