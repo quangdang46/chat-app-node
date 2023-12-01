@@ -679,4 +679,53 @@ $(document).ready(function () {
   socket.on("server-edit-chat", ({ idChat, message }) => {
     $(`li[data-idChat=${idChat}] .message-data`).text(message);
   });
+
+
+  // group chat!!!!!!!!!!!!!!!!
+  $("#form-group").submit(function (e) {
+    e.preventDefault();
+    const name = $(".name-group").val();
+    const limit = $(".limit-group").val();
+    const image = $("#imageGroup")[0].files[0];
+    const idUser = $(".idUser").val();
+
+    console.log(image);
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("limit", limit);
+    formData.append("imageGroup", image);
+    formData.append("idUser", idUser);
+
+    $.ajax({
+      type: "POST",
+      url: "/group",
+      data: formData,
+      contentType: false, // Set contentType to false
+      processData: false, // Set processData to false
+      success: function (response) {
+        $.toast({
+          heading: "Success",
+          text: response.message,
+          showHideTransition: "slide",
+          icon: "success",
+          position: "top-right",
+        });
+        // setTimeout(() => {
+        //   window.location.href = "/home";
+        // }, 1000);
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+      },
+    });
+
+
+
+  });
 });

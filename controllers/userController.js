@@ -1,6 +1,7 @@
 const bycrypt = require("bcrypt");
 
 const User = require("../models/User");
+const Group = require("../models/Group");
 
 class userController {
   static async renderRegister(req, res, next) {
@@ -70,9 +71,15 @@ class userController {
       });
       const objUsers = users.map((user) => user.toObject());
       // set header
+
+      // group
+      const groups = await Group.find({ owner_id: req.session.userData._id });
+      const objGroups = groups.map((group) => group.toObject());
+      console.log(objGroups);
       res.render("home", {
         userData: req.session.userData,
         users: objUsers,
+        groups: objGroups,
       });
     } catch (error) {
       return res.status(500).json({ message: "Internal server error" });
