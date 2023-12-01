@@ -679,7 +679,7 @@ $(document).ready(function () {
   });
 
   const templateGroup = (group) => {
-    return `<li>
+    return `<li data-id-group="${group._id}">
                     <div class="d-flex align-items-center">
                       <div class="chat-user-img me-3 ms-0">
                         <div class="avatar-xs">
@@ -714,9 +714,24 @@ $(document).ready(function () {
                             data-bs-target="#deleteGroup"
                             style="display: flex; align-items: center; justify-content: space-around"
                             data-id="${group._id}}" data-limit="${group.limit}}"
-                          >Delete
+                          >Delete 
                             <i
                               class="fa-solid fa-trash-can float-end text-muted"
+                              style="pointer-event: none"
+                            ></i>
+                          </a>
+                          <a
+                            type="button"
+                            class="dropdown-item button-edit-group"
+                            data-bs-toggle="modal"
+                            data-bs-target="#updateGroup"
+                            style="display: flex; align-items: center; justify-content: space-around"
+                            data-id="{{this._id}}"
+                            data-limit="{{this.limit}}"
+                            data-name="{{this.name}}"
+                          >Update
+                            <i
+                              class="fa-solid fa-pen-to-square float-end text-muted"
                               style="pointer-event: none"
                             ></i>
                           </a>
@@ -727,7 +742,7 @@ $(document).ready(function () {
                             data-bs-target="#addMember"
                             style="display: flex; align-items: center; justify-content: space-around"
                             data-id="${group._id}}" data-limit="${group.limit}}"
-                          >Add
+                          >Add 
                             <i
                               class="fa-solid fa-pen-to-square float-end text-muted"
                               style="pointer-event: none"
@@ -868,10 +883,6 @@ $(document).ready(function () {
             icon: "success",
             position: "top-right",
           });
-          // add group to list group
-          // const newGroup = response.newGroup;
-          // $(`li[data-id=${idGroup}]`).replaceWith(templateGroup(newGroup));
-          // $(".select-members").html("");
         } else {
           $.toast({
             heading: "Error",
@@ -892,6 +903,74 @@ $(document).ready(function () {
           position: "top-right",
         });
         $(".select-members").html("");
+      },
+    });
+  });
+
+  $(document).on("click", ".button-edit-group", function (e) {
+    e.preventDefault();
+    const idGroup = $(this).attr("data-id");
+    const lastLimit = $(this).attr("data-limit");
+    const name = $(this).attr("data-name");
+    $(".idGroupUpdate").val(idGroup);
+    $(".limitMemberUpdate").val(lastLimit);
+
+    $(".name-group-update").val(name);
+    $(".limit-group-update").val(lastLimit);
+  });
+
+  $("#form-group-update").submit(function (e) {
+    e.preventDefault();
+    const idGroup = $(".idGroupUpdate").val();
+    const lastLimit = $(".limitMemberUpdate").val();
+    const name = $(".name-group-update").val();
+    const limit = $(".limit-group-update").val();
+    const image = $("#imageGroupUpdate")[0].files[0];
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("limit", limit);
+    formData.append("imageGroupUpdate", image);
+    formData.append("idGroup", idGroup);
+    formData.append("lastLimit", lastLimit);
+
+    $.ajax({
+      type: "POST",
+      url: "/update-group",
+      data: formData,
+      contentType: false, // Set contentType to false
+      processData: false, // Set processData to false
+      success: function (response) {
+        if (response.success) {
+          $.toast({
+            heading: "Success",
+            text: response.message,
+            showHideTransition: "slide",
+            icon: "success",
+            position: "top-right",
+          });
+
+          // add group to list group
+          const newGroup = response.newGroup;
+          console.log(newGroup);
+          $(`li[data-id-group=${idGroup}]`).replaceWith(
+            templateGroup(newGroup)
+          );
+
+          $("#updateGroup").modal("hide");
+          setTimeout(() => {
+            window.location.href = "/home";
+          }, 1000);
+        }
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
       },
     });
   });

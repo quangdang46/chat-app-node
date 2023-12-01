@@ -988,7 +988,7 @@
 
               {{#if groups}}
                 {{#each groups}}
-                  <li >
+                  <li data-id-group="{{this._id}}">
                     <div class="d-flex align-items-center">
                       <div class="chat-user-img me-3 ms-0">
                         <div class="avatar-xs">
@@ -1022,10 +1022,26 @@
                             data-bs-toggle="modal"
                             data-bs-target="#deleteGroup"
                             style="display: flex; align-items: center; justify-content: space-around"
-                            data-id="{{this._id}}" data-limit="{{this.limit}}"
+                            data-id="{{this._id}}"
+                            data-limit="{{this.limit}}"
                           >Delete
                             <i
                               class="fa-solid fa-trash-can float-end text-muted"
+                              style="pointer-event: none"
+                            ></i>
+                          </a>
+                          <a
+                            type="button"
+                            class="dropdown-item button-edit-group"
+                            data-bs-toggle="modal"
+                            data-bs-target="#updateGroup"
+                            style="display: flex; align-items: center; justify-content: space-around"
+                            data-id="{{this._id}}"
+                            data-limit="{{this.limit}}"
+                            data-name="{{this.name}}"
+                          >Update
+                            <i
+                              class="fa-solid fa-pen-to-square float-end text-muted"
                               style="pointer-event: none"
                             ></i>
                           </a>
@@ -1035,7 +1051,8 @@
                             data-bs-toggle="modal"
                             data-bs-target="#addMember"
                             style="display: flex; align-items: center; justify-content: space-around"
-                            data-id="{{this._id}}" data-limit="{{this.limit}}"
+                            data-id="{{this._id}}"
+                            data-limit="{{this.limit}}"
                           >Add
                             <i
                               class="fa-solid fa-pen-to-square float-end text-muted"
@@ -1637,8 +1654,7 @@
   </div>
 </div>
 
-
-{{!-- modal show add member --}}
+{{! modal show add member }}
 <div
   class="modal fade"
   id="addMember"
@@ -1662,8 +1678,8 @@
       </div>
       <div class="modal-body p-4">
         <form class="addMemberForm">
-          <input type="hidden" class="idGroup">
-          <input type="hidden" class="limitMember">
+          <input type="hidden" class="idGroup" />
+          <input type="hidden" class="limitMember" />
           <div class="mb-4">
             <label class="form-label">Group Members</label>
             <div class="mb-3">
@@ -1700,8 +1716,9 @@
                             style="height: auto; overflow: hidden"
                           >
                             <div class="simplebar-content" style="padding: 0px">
-                              <ul class="list-unstyled contact-list select-members">
-                                
+                              <ul
+                                class="list-unstyled contact-list select-members"
+                              >
 
                               </ul>
 
@@ -1749,6 +1766,83 @@
               Close
             </button>
             <button type="submit" class="btn btn-primary">Add member</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{! modal edit group }}
+<div
+  class="modal fade"
+  id="updateGroup"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="addgroup-exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5
+          class="modal-title font-size-16"
+          id="addgroup-exampleModalLabel"
+        >Update group</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        >
+        </button>
+      </div>
+      <div class="modal-body p-4">
+        <form enctype="multipart/form-data" method="post" id="form-group-update">
+          <input type="hidden" class="idGroupUpdate" />
+          <input type="hidden" class="limitMemberUpdate" />
+          <div class="mb-4">
+            <label for="addgroupname-input" class="form-label">Group Name</label>
+            <input
+              type="text"
+              class="form-control name-group-update"
+              id="addgroupname-input"
+              placeholder="Enter Group Name"
+              name="nameGroupUpdate"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Group Image</label>
+            <div class="mb-3">
+              <input
+                type="file"
+                name="imageGroupUpdate"
+                id="imageGroupUpdate"
+                placeholder="Image group"
+              />
+            </div>
+
+          </div>
+          <div class="mb-3">
+            <label
+              for="addgroupdescription-input"
+              class="form-label"
+            >Limit</label>
+            <input
+              type="number"
+              class="form-control limit-group-update"
+              id="addgroupdescription-input"
+              placeholder="Enter limit"
+              name="limitGroupUpdate"
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-link"
+              data-bs-dismiss="modal"
+            >Close</button>
+            <button type="submit" class="btn btn-primary">Update group Groups</button>
           </div>
         </form>
       </div>

@@ -20,5 +20,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post("/group", upload.single("imageGroup"), groupController.createGroup);
+router.post(
+  "/update-group",
+  upload.single("imageGroupUpdate"),
+  groupController.updateGroup
+);
 
 module.exports = router;
