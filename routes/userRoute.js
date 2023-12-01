@@ -34,7 +34,5 @@ router.get("/home",auth.is_login, userController.renderHome);
 router.post("/getprofile",auth.is_login, userController.getProfile);
 
 router.post("/get-member",userController.getMember)
-router.get("*", (req, res) => {
-  res.redirect("/login");
-});
+
 module.exports = router;

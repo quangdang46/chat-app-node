@@ -26,6 +26,8 @@ router.post(
   groupController.updateGroup
 );
 
+
 router.post("/delete-group", groupController.deleteGroup);
+router.get("/share-group/:id", groupController.shareGroup);
 
 module.exports = router;

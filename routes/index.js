@@ -12,4 +12,7 @@ router.use("/", chatRouter);
 router.use("/", groupRouter);
 router.use("/", memberRouter);
 
+router.get("*", (req, res) => {
+  res.redirect("/login");
+});
 module.exports = router;

@@ -66,6 +66,45 @@ class groupController {
       res.status(500).json({ message: "Internal server error" });
     }
   }
+
+  static async shareGroup(req, res, next) {
+    // try {
+    //   const { id } = req.params;
+
+    //   const group = await Group.findOne({ _id: id });
+    //   if (!group) {
+    //     res.status(404).json({ message: "Group not found" });
+    //   } else if (req.session.userData === undefined) {
+    //     res.status(401).json({ message: "You need login" });
+    //   } else {
+    //     const totalMember = await Member.find({
+    //       group_id: id,
+    //     }).countDocuments();
+    //     const avilable = group.limit - totalMember;
+    //     const isJoiner = await Member.findOne({
+    //       group_id: id,
+    //       user_id: req.session.userData._id,
+    //     }).countDocuments();
+    //     const isOwner = group.owner_id === req.session.userData._id;
+
+    //     res.render("share-group", {
+    //       title: "Share Group",
+    //       group,
+    //       avilable,
+    //       isJoiner,
+    //       isOwner,
+    //       totalMember,
+    //     });
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   res.status(500).json({ message: "Internal server error" });
+    // }
+
+    res.render("share-group", {
+      title: "Share Group",
+    });
+  }
 }
 
 module.exports = groupController;
