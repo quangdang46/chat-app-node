@@ -78,6 +78,11 @@ chatNamespace.on("connection", async (socket) => {
     socket.broadcast.emit("server-delete-chat", data);
   });
 
+  // client-edit-chat
+  socket.on("client-edit-chat", async (data) => {
+    socket.broadcast.emit("server-edit-chat", data);
+  });
+
   socket.on("disconnect", async () => {
     await User.findByIdAndUpdate({ _id: userId }, { $set: { online: false } });
 

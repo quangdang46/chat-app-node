@@ -446,7 +446,7 @@ $(document).ready(function () {
                 <div class="user-chat-content">
                   <div class="ctext-wrap">
                     <div class="ctext-wrap-content">
-                      <p class="mb-0">
+                      <p class="mb-0 message-data">
                         ${message}
                       </p>
                       <p class="chat-time mb-0">
@@ -473,6 +473,13 @@ $(document).ready(function () {
                               justify-content: space-around;
                           " data-idChat="${chatId}">Delete
                           <i class="fa-solid fa-trash-can float-end text-muted" style="pointer-event :none"></i>
+                          </a>
+                        <a type="button" class="dropdown-item button-edit-chat" data-bs-toggle="modal" data-bs-target="#editModal" style="
+                              display: flex;
+                              align-items: center;
+                              justify-content: space-around;
+                          " data-idChat="${chatId}">Edit 
+                          <i class="fa-solid fa-pen-to-square float-end text-muted" style="pointer-event :none"></i>
                           </a>
                       </div>
                     </div>`
@@ -618,5 +625,58 @@ $(document).ready(function () {
   // server-delete-chat
   socket.on("server-delete-chat", (idChat) => {
     $(`li[data-idChat=${idChat}]`).remove();
+  });
+
+
+  // edit chat
+  $(document).on("click", ".button-edit-chat", function (e) {
+    e.preventDefault();
+    const idChat = $(this).attr("data-idChat");
+    $(".idChatEdit").val(idChat);
+
+    const message = $(`li[data-idChat=${idChat}] .message-data`).text();
+    $(".msg-edit").val(message.trim());
+
+  });
+
+  $(".btn-edit-chat").click(function (e) {
+    e.preventDefault();
+    const idChat = $(".idChatEdit").val();
+    const message = $(".msg-edit").val();
+    $.ajax({
+      type: "POST",
+      url: "/update-message",
+      dataType: "json",
+      data: { idChat, message },
+      success: function (response) {
+        $(`li[data-idChat=${idChat}] .message-data`).text(message);
+        $("#editModal").modal("hide");
+
+        $.toast({
+          heading: "Success",
+          text: response.message,
+          showHideTransition: "slide",
+          icon: "success",
+          position: "top-right",
+        });
+
+        // emit edit chat
+        socket.emit("client-edit-chat", { idChat, message });
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+      },
+    });
+  });
+
+  // server-edit-chat
+  socket.on("server-edit-chat", ({ idChat, message }) => {
+    $(`li[data-idChat=${idChat}] .message-data`).text(message);
   });
 });

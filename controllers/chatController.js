@@ -41,6 +41,29 @@ class chatController {
       next(error);
     }
   }
+
+  static async updateChat(req, res, next) {
+    try {
+      const { idChat, message } = req.body;
+      const updateChat = await Chat.findByIdAndUpdate(
+        {
+          _id: idChat,
+        },
+        {
+          $set: {
+            message,
+          },
+        }
+      );
+      res.status(200).send({
+        success: true,
+        message: "Chat updated successfully",
+        updateChat,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = chatController;
