@@ -2126,3 +2126,48 @@
     </div>
   </div>
 </div>
+
+
+
+{{!-- group --}}
+<!-- Modal -->
+<div class="modal fade" id="deleteGroupChatModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete Group Chat</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" class="idChatGroupDelete" />
+        <p>Xac nhan xoa  nay trong group</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary btn-delete-group-chat">Delete
+          Chat Group</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{! model edit chat }}
+<div class="modal fade" id="editGroupChatModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Group Chat Group</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" class="idChatGroupEdit" />
+        <p>Chinh sua chat nay trong group</p>
+        <input type="text" class="msg-edit form-control form-control-lg bg-light border-light" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary btn-edit-group-chat">Edit Chat</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -45,6 +45,17 @@ class groupChatController {
       });
     } catch (error) {}
   }
+
+  static async deleteGroupMessage(req, res) {
+    try {
+      const { idChat } = req.body;
+      await GroupChat.findByIdAndDelete({ _id: idChat });
+      res.status(200).json({
+        message: "Delete message successfully",
+        success: true,
+      });
+    } catch (error) {}
+  }
 }
 
 module.exports = groupChatController;

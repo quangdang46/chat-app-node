@@ -94,6 +94,11 @@ chatNamespace.on("connection", async (socket) => {
     socket.broadcast.emit("server-load-group-chat", data);
   });
 
+  // client-delete-group-chat
+  socket.on("client-delete-group-chat", async (data) => {
+    socket.broadcast.emit("server-delete-group-chat", data);
+  });
+
   socket.on("disconnect", async () => {
     await User.findByIdAndUpdate({ _id: userId }, { $set: { online: false } });
 

@@ -1296,14 +1296,14 @@ $(document).ready(function () {
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                       </a>
                       <div class="dropdown-menu">
-                        <a type="button" class="dropdown-item button-delete-chat" data-bs-toggle="modal" data-bs-target="#deleteModal" style="
+                        <a type="button" class="dropdown-item button-delete-group-chat" data-bs-toggle="modal" data-bs-target="#deleteGroupChatModal" style="
                               display: flex;
                               align-items: center;
                               justify-content: space-around;
                           " data-idMessGroupChat="${idMessGroup}">Delete
                           <i class="fa-solid fa-trash-can float-end text-muted" style="pointer-event :none"></i>
                           </a>
-                        <a type="button" class="dropdown-item button-edit-chat" data-bs-toggle="modal" data-bs-target="#editModal" style="
+                        <a type="button" class="dropdown-item button-edit-group-chat" data-bs-toggle="modal" data-bs-target="#editGroupChatModal" style="
                               display: flex;
                               align-items: center;
                               justify-content: space-around;
@@ -1401,5 +1401,51 @@ $(document).ready(function () {
         })
       );
     }
+  });
+
+  // edit delete chat
+  $(document).on("click", ".button-delete-group-chat", function (e) {
+    e.preventDefault();
+    const idChat = $(this).attr("data-idMessGroupChat");
+    $(".idChatGroupDelete").val(idChat);
+  });
+  $(".btn-delete-group-chat").click(function (e) {
+    e.preventDefault();
+    const idChat = $(".idChatGroupDelete").val();
+    $.ajax({
+      type: "POST",
+      url: "/delete-group-message",
+      dataType: "json",
+      data: { idChat },
+      success: function (response) {
+        $(`li[data-idMessGroupChat=${idChat}]`).remove();
+        $("#deleteGroupChatModal").modal("hide");
+
+        $.toast({
+          heading: "Success",
+          text: response.message,
+          showHideTransition: "slide",
+          icon: "success",
+          position: "top-right",
+        });
+
+        // emit delete chat group
+        socket.emit("client-delete-group-chat", idChat);
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+      },
+    });
+  });
+
+  //server-delete-group-chat
+  socket.on("server-delete-group-chat", (idChat) => {
+    $(`li[data-idMessGroupChat=${idChat}]`).remove();
   });
 });
