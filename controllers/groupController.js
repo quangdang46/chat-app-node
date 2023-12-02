@@ -65,21 +65,28 @@ class groupController {
   static async deleteGroup(req, res, next) {
     try {
       const { idGroup } = req.body;
-      // const { _id } = req.session.userData;
-      // if (!_id) {
-      //   res.status(401).json({ message: "Unauthorized", success: false });
-      // }
-      // const group = await Group.findOne({ _id: idGroup });
-      // if(group.owner_id != _id){
-      //   res.status(401).json({ message: "Your not owner,can't delete group", success: false });
-      // }else{
-      //   await Group.deleteOne({ _id: idGroup });
-      //   await Member.deleteMany({ group_id: idGroup });
-      //   res.status(200).json({ message: "success delete group", success: true });
-      // }
-      await Group.deleteOne({ _id: idGroup });
-      await Member.deleteMany({ group_id: idGroup });
-      res.status(200).json({ message: "success delete group", success: true });
+      const { _id } = req.session.userData;
+      if (!_id) {
+        res.status(401).json({ message: "Unauthorized", success: false });
+      }
+      const group = await Group.findOne({ _id: idGroup });
+      if (group.owner_id != _id) {
+        res
+          .status(401)
+          .json({
+            message: "Your not owner,can't delete group",
+            success: false,
+          });
+      } else {
+        await Group.deleteOne({ _id: idGroup });
+        await Member.deleteMany({ group_id: idGroup });
+        res
+          .status(200)
+          .json({ message: "success delete group", success: true });
+      }
+      // await Group.deleteOne({ _id: idGroup });
+      // await Member.deleteMany({ group_id: idGroup });
+      // res.status(200).json({ message: "success delete group", success: true });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });

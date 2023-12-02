@@ -83,6 +83,12 @@ chatNamespace.on("connection", async (socket) => {
     socket.broadcast.emit("server-edit-chat", data);
   });
 
+  // client-send-add-member
+  socket.on("client-send-add-member", async (data) => {
+    console.log(data);
+    socket.broadcast.emit("server-send-add-member", data);
+  });
+
   socket.on("disconnect", async () => {
     await User.findByIdAndUpdate({ _id: userId }, { $set: { online: false } });
 

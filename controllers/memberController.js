@@ -1,3 +1,4 @@
+const Group = require("../models/Group");
 const Member = require("../models/Member");
 
 class memberController {
@@ -26,7 +27,27 @@ class memberController {
       }
 
       await Member.insertMany(data);
-      res.status(200).json({ message: "Members added", success: true });
+
+      // find group
+      const group = await Group.findOne({ _id: idGroup });
+      // find members in group except current user
+      const membersInGroup = await Member.find({
+        group_id: idGroup,
+        user_id: { $ne: req.session.userData._id },
+      }).populate("user_id");
+
+      const groupObj = group.toObject();
+      const membersInGroupObj = membersInGroup.map((member) => {
+        return member.user_id.toObject();
+      });
+      res
+        .status(200)
+        .json({
+          message: "Members added",
+          success: true,
+          group: groupObj,
+          members: membersInGroupObj,
+        });
     } catch (error) {
       next(error);
     }

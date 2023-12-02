@@ -75,6 +75,15 @@ class userController {
       // group
       const groups = await Group.find({ owner_id: req.session.userData._id });
       const objGroups = groups.map((group) => group.toObject());
+      // Find that person's group or just join
+      // const _groups = await Group.find({
+      //   $or: [
+      //     { owner_id: req.session.userData._id },
+      //     { members: req.session.userData._id },
+      //   ],
+      // });
+      // const _objGroups = _groups.map((group) => group.toObject());
+
       res.render("home", {
         userData: req.session.userData,
         users: objUsers,

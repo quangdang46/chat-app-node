@@ -849,7 +849,6 @@ $(document).ready(function () {
           template += templateMemberSelect(user, isMember);
         });
         $(".select-members").html(template);
-        console.log(response.users);
       },
       error: function (error) {
         $.toast({
@@ -888,6 +887,12 @@ $(document).ready(function () {
             icon: "success",
             position: "top-right",
           });
+          console.log(response.group);
+          // client emit add member
+          socket.emit("client-send-add-member", {
+            group: response.group,
+            members: response.members,
+          });
         } else {
           $.toast({
             heading: "Error",
@@ -910,6 +915,17 @@ $(document).ready(function () {
         $(".select-members").html("");
       },
     });
+  });
+
+  // server-send-add-member
+  socket.on("server-send-add-member", (data) => {
+    const currentUser = $(".idUser").val();
+    const { members, group } = data;
+    const isMember = members.some((member) => member._id == currentUser);
+    console.log(isMember);
+    if (isMember) {
+      $(`.list-group-chat`).append(templateGroup(group));
+    }
   });
 
   $(document).on("click", ".button-edit-group", function (e) {
