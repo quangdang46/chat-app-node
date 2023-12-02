@@ -403,6 +403,7 @@ $(document).ready(function () {
 
   $(".list-group-users").click(function (e) {
     $(".user-chat").show(1000);
+    $(".group-chat").hide();
 
     const userId = $(this).attr("data-id");
     $(".idReceiver").val(userId);
@@ -1171,21 +1172,53 @@ $(document).ready(function () {
     });
   });
 
-  $(".list-group-chat-join").click(function (e) {
+  const groupProfile = (group) => {
+    return `
+    <div class="d-flex align-items-center">
+                  <div class="d-block d-lg-none me-2 ms-0">
+                    <a
+                      href="javascript: void(0);"
+                      class="user-chat-remove text-muted font-size-16 p-2"
+                    ><i class="ri-arrow-left-s-line"></i></a>
+                  </div>
+                  <div class="me-3 ms-0">
+                    <img
+                      src="images/${group.image}"
+                      class="rounded-circle avatar-xs"
+                      alt=""
+                    />
+                  </div>
+                  <div class="flex-grow-1 overflow-hidden">
+                    <h5 class="font-size-16 mb-0 text-truncate"><a
+                        href="#"
+                        class="text-reset user-profile-show"
+                      >${group.name}</a>
+                      
+                    </h5>
+                  </div>
+                </div>
+    `;
+  };
+
+  $(".group-join").click(function (e) {
     $(".group-chat").show(1000);
-    const idGroup = $(this).attr("data-id");
-    // $.ajax({
-    //   type: "POST",
-    //   url: "/get-group",
-    //   dataType: "json",
-    //   success: function (response) {
-    //     if (response.success) {
-    //       console.log(response);
-    //     }
-    //   },
-    //   error: function (error) {
-    //     console.log(error);
-    //   },
-    // });
+    $(".user-chat").hide();
+    const idGroup = $(this).attr("data-id-group");
+    console.log("idGroup", idGroup);
+    $.ajax({
+      type: "POST",
+      url: "/get-group",
+      dataType: "json",
+      data: { idGroup },
+      success: function (response) {
+        if (response.success) {
+          console.log(response.group);
+          $(".profile-group-chat").html(groupProfile(response.group));
+        }
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
   });
 });

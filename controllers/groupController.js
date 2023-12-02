@@ -145,21 +145,13 @@ class groupController {
 
   static async getGroup(req, res, next) {
     try {
-      // group
-      const groups = await Group.find({ owner_id: req.session.userData._id });
-      const objGroups = groups.map((group) => group.toObject());
-
-      const joinedGroups = await Member.find({
-        user_id: req.session.userData._id,
-      });
-
-      const objJoinedGroups = joinedGroups.map((group) => group.toObject());
-      res.status(200).json({
-        message: "success get group",
-        success: true,
-        group: objGroups,
-        joinedGroups: objJoinedGroups,
-      });
+      const { idGroup } = req.body;
+      console.log(idGroup);
+      const group = await Group.findOne({ _id: idGroup });
+      const groupObj = group.toObject();
+      res
+        .status(200)
+        .json({ message: "success get group", group: groupObj, success: true });
     } catch (error) {
       return res.status(500).json({ message: "Internal server error" });
     }
