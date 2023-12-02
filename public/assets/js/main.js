@@ -496,7 +496,7 @@ $(document).ready(function () {
   };
 
   // send chat
-  $(".chat-input-section").submit(function (e) {
+  $("#chat-input-user").submit(function (e) {
     e.preventDefault();
     const message = $(".chat-input").val();
     const idUserReceiver = $(".idReceiver").val();
@@ -1204,6 +1204,7 @@ $(document).ready(function () {
     $(".group-chat").show(1000);
     $(".user-chat").hide();
     const idGroup = $(this).attr("data-id-group");
+    $(".idGroupChat").val(idGroup);
     console.log("idGroup", idGroup);
     $.ajax({
       type: "POST",
@@ -1221,4 +1222,120 @@ $(document).ready(function () {
       },
     });
   });
+  // chat in group
+
+  const templateGroupChat = ({
+    user,
+    message,
+    is_sender,
+    time,
+    idMessGroup = "",
+  }) => {
+    return `<li class="${
+      !is_sender && "right"
+    }" data-idMessGroupChat="${idMessGroup}">
+              <div class="conversation-list">
+                <div class="chat-avatar">
+                  <img src="images/${user.image}" alt="" />
+                </div>
+
+                <div class="user-chat-content">
+                  <div class="ctext-wrap">
+                    <div class="ctext-wrap-content">
+                      <p class="mb-0 message-data">
+                        ${message}
+                      </p>
+                      <p class="chat-time mb-0">
+                        <i class="fa-solid fa-clock align-middle"></i>
+                        <span class="align-middle">${time}</span></p>
+                    </div>
+                    ${
+                      is_sender
+                        ? `<div class="dropdown align-self-start">
+                      <a
+                        class="dropdown-toggle"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                      </a>
+                      <div class="dropdown-menu">
+                        <a type="button" class="dropdown-item button-delete-chat" data-bs-toggle="modal" data-bs-target="#deleteModal" style="
+                              display: flex;
+                              align-items: center;
+                              justify-content: space-around;
+                          " data-idMessGroupChat="${idMessGroup}">Delete
+                          <i class="fa-solid fa-trash-can float-end text-muted" style="pointer-event :none"></i>
+                          </a>
+                        <a type="button" class="dropdown-item button-edit-chat" data-bs-toggle="modal" data-bs-target="#editModal" style="
+                              display: flex;
+                              align-items: center;
+                              justify-content: space-around;
+                          " data-idMessGroupChat="${idMessGroup}">Edit 
+                          <i class="fa-solid fa-pen-to-square float-end text-muted" style="pointer-event :none"></i>
+                          </a>
+                      </div>
+                    </div>`
+                        : ""
+                    }
+                    
+                  </div>
+                  <div class="conversation-name">${user.fullname}</div>
+                </div>
+              </div>
+            </li>`;
+  };
+
+  $("#chat-input-group").submit(function (e) {
+    e.preventDefault();
+    const message = $(".group-chat-input").val();
+    const idSender = $(".idUser").val();
+    const idGroup = $(".idGroupChat").val();
+
+    $.ajax({
+      type: "POST",
+      url: "/save-group-message",
+      dataType: "json",
+      data: { message, sender_id: idSender, group_id: idGroup },
+      success: function (response) {
+        $(".group-chat-input").val("");
+        if (response.success) {
+          $.toast({
+            heading: "Success",
+            text: response.message,
+            showHideTransition: "slide",
+            icon: "success",
+            position: "top-right",
+          });
+
+          const data = response.data;
+          console.log(data)
+          const is_sender = data.sender_id._id == idSender;
+          $(".chat-group-container").append(
+            templateGroupChat({
+              user: data.sender_id,
+              message: data.message,
+              is_sender,
+              time: formatTime(data.createdAt),
+              idMessGroup: data._id,
+            })
+          );
+        }
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+      },
+    });
+  });
+
+  $(".chat-input").val("");
 });

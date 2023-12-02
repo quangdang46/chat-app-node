@@ -1,5 +1,7 @@
 <input type="hidden" value="{{userData._id}}" class="idUser" />
 <input type="hidden" value="" class="idReceiver" />
+<input type="hidden" value="" class="idGroupChat" />
+
 <div class="layout-wrapper d-lg-flex">
 
   <!-- Start left sidebar-menu -->
@@ -1646,7 +1648,7 @@
         <!-- end chat conversation end -->
 
         <!-- start chat input section -->
-        <form class="chat-input-section p-3 p-lg-4 border-top mb-0">
+        <form class="chat-input-section p-3 p-lg-4 border-top mb-0" id="chat-input-user">
 
           <div class="row g-0">
 
@@ -1724,7 +1726,7 @@
 
   </div>
 
-  {{! group chat }}
+  {{! group chat!!!!!!!!!!!!!!!!!!!!!!! }}
   <div class="group-chat w-100 overflow-hidden">
     <div class="d-lg-flex">
 
@@ -1743,28 +1745,7 @@
 
             {{! right chat }}
             <div class="col-sm-8 col-4">
-              {{! <ul class="list-inline user-chat-nav text-end mb-0">
-                <li class="list-inline-item">
-                  <div class="dropdown">
-                    <button class="btn nav-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false">
-                      <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                    <div class="dropdown-menu p-0 dropdown-menu-end dropdown-menu-md">
-                      <div class="search-box p-2">
-                        <input type="text" class="form-control bg-light border-0" placeholder="Search.." />
-                      </div>
-                    </div>
-                  </div>
-                </li>
-  
-                <li class="list-inline-item d-none d-lg-inline-block me-2 ms-0">
-                  <button type="button" class="btn nav-btn user-profile-show">
-                    <i class="fa-solid fa-user"></i>
-                  </button>
-                </li>
-  
-              </ul> }}
+             
             </div>
           </div>
         </div>
@@ -1772,7 +1753,7 @@
 
         <!-- start chat conversation -->
         <div class="chat-conversation p-3 p-lg-4" data-simplebar="init">
-          <ul class="list-unstyled mb-0 chat-user-container">
+          <ul class="list-unstyled mb-0 chat-group-container">
             {{! chat container }}
 
           </ul>
@@ -1780,46 +1761,20 @@
         <!-- end chat conversation end -->
 
         <!-- start chat input section -->
-        <form class="chat-input-section p-3 p-lg-4 border-top mb-0">
+        <form class="chat-input-section p-3 p-lg-4 border-top mb-0" id="chat-input-group">
 
           <div class="row g-0">
 
             <div class="col">
               <input
                 type="text"
-                class="form-control form-control-lg bg-light border-light chat-input"
+                class="form-control form-control-lg bg-light border-light group-chat-input"
                 placeholder="Enter Message..."
               />
             </div>
             <div class="col-auto">
               <div class="chat-input-links ms-md-2 me-md-0">
                 <ul class="list-inline mb-0">
-                  <li
-                    class="list-inline-item"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    title="Emoji"
-                  >
-                    <button
-                      type="button"
-                      class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect"
-                    >
-                      <i class="fa-solid fa-face-smile"></i>
-                    </button>
-                  </li>
-                  <li
-                    class="list-inline-item"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    title="Attached File"
-                  >
-                    <button
-                      type="button"
-                      class="btn btn-link text-decoration-none font-size-16 btn-lg waves-effect"
-                    >
-                      <i class="fa-solid fa-file"></i>
-                    </button>
-                  </li>
                   <li class="list-inline-item">
                     <button
                       type="submit"
