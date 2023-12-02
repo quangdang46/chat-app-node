@@ -30,6 +30,21 @@ class groupChatController {
       });
     } catch (error) {}
   }
+
+  static async loadChatGroup(req, res) {
+    try {
+      const { group_id } = req.body;
+      const chats = await GroupChat.find({ group_id }).populate(
+        "sender_id",
+        "fullname image"
+      );
+      res.status(200).json({
+        message: "Load chat group successfully",
+        chats,
+        success: true,
+      });
+    } catch (error) {}
+  }
 }
 
 module.exports = groupChatController;

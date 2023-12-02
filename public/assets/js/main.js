@@ -1200,12 +1200,44 @@ $(document).ready(function () {
     `;
   };
 
+  // load groupchat
+  const loadGroupChat = (idGroup) => {
+    $.ajax({
+      type: "POST",
+      url: "/load-group-chat",
+      dataType: "json",
+      data: { group_id: idGroup },
+      success: function (response) {
+        console.log("load group chat", response);
+
+        if (response.success) {
+          const chats = response.chats;
+          let template = "";
+          chats.forEach((chat) => {
+            const is_sender = chat.sender_id._id == $(".idUser").val();
+            template += templateGroupChat({
+              user: chat.sender_id,
+              message: chat.message,
+              is_sender,
+              time: formatTime(chat.createdAt),
+              idMessGroup: chat._id,
+            });
+          });
+          $(".chat-group-container").html(template);
+        }
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  };
+
   $(".group-join").click(function (e) {
     $(".group-chat").show(1000);
     $(".user-chat").hide();
     const idGroup = $(this).attr("data-id-group");
     $(".idGroupChat").val(idGroup);
-    console.log("idGroup", idGroup);
+
     $.ajax({
       type: "POST",
       url: "/get-group",
@@ -1215,6 +1247,7 @@ $(document).ready(function () {
         if (response.success) {
           console.log(response.group);
           $(".profile-group-chat").html(groupProfile(response.group));
+          loadGroupChat(idGroup);
         }
       },
       error: function (error) {
