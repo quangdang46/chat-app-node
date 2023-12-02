@@ -71,12 +71,10 @@ class groupController {
       }
       const group = await Group.findOne({ _id: idGroup });
       if (group.owner_id != _id) {
-        res
-          .status(401)
-          .json({
-            message: "Your not owner,can't delete group",
-            success: false,
-          });
+        res.status(401).json({
+          message: "Your not owner,can't delete group",
+          success: false,
+        });
       } else {
         await Group.deleteOne({ _id: idGroup });
         await Member.deleteMany({ group_id: idGroup });
@@ -142,6 +140,28 @@ class groupController {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  static async getGroup(req, res, next) {
+    try {
+      // group
+      const groups = await Group.find({ owner_id: req.session.userData._id });
+      const objGroups = groups.map((group) => group.toObject());
+
+      const joinedGroups = await Member.find({
+        user_id: req.session.userData._id,
+      });
+
+      const objJoinedGroups = joinedGroups.map((group) => group.toObject());
+      res.status(200).json({
+        message: "success get group",
+        success: true,
+        group: objGroups,
+        joinedGroups: objJoinedGroups,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Internal server error" });
     }
   }
 }

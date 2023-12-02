@@ -2,6 +2,7 @@ const bycrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const User = require("../models/User");
 const Group = require("../models/Group");
+const Member = require("../models/Member");
 
 class userController {
   static async renderRegister(req, res, next) {
@@ -84,10 +85,20 @@ class userController {
       // });
       // const _objGroups = _groups.map((group) => group.toObject());
 
+      const joinedGroups = await Member.find({
+        user_id: req.session.userData._id,
+      }).populate("group_id");
+      const objJoinedGroups = joinedGroups.map((group) => group.toObject());
+
+      let joinedGroupsData = [];
+      for (let i = 0; i < objJoinedGroups.length; i++) {
+        joinedGroupsData.push(objJoinedGroups[i].group_id);
+      }
       res.render("home", {
         userData: req.session.userData,
         users: objUsers,
         groups: objGroups,
+        joinedGroups: joinedGroupsData,
       });
     } catch (error) {
       return res.status(500).json({ message: "Internal server error" });

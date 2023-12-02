@@ -1,6 +1,7 @@
 $(document).ready(function () {
   // init userchat
   $(".user-chat").hide();
+  $(".group-chat").hide();
 
   $("#registerForm").submit(function (e) {
     e.preventDefault();
@@ -1168,5 +1169,23 @@ $(document).ready(function () {
         console.log(error);
       },
     });
+  });
+
+  $(".list-group-chat-join").click(function (e) {
+    $(".group-chat").show(1000);
+    const idGroup = $(this).attr("data-id");
+    // $.ajax({
+    //   type: "POST",
+    //   url: "/get-group",
+    //   dataType: "json",
+    //   success: function (response) {
+    //     if (response.success) {
+    //       console.log(response);
+    //     }
+    //   },
+    //   error: function (error) {
+    //     console.log(error);
+    //   },
+    // });
   });
 });

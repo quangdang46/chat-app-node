@@ -32,4 +32,6 @@ router.post("/delete-group", groupController.deleteGroup);
 router.post("/search-group", groupController.searchGroup);
 
 router.post("/join-group", groupController.joinGroup);
+
+router.post("/get-group", groupController.getGroup);
 module.exports = router;
