@@ -89,6 +89,11 @@ chatNamespace.on("connection", async (socket) => {
     socket.broadcast.emit("server-send-add-member", data);
   });
 
+  // client-send-group-message
+  socket.on("client-send-group-message", async (data) => {
+    socket.broadcast.emit("server-load-group-chat", data);
+  });
+
   socket.on("disconnect", async () => {
     await User.findByIdAndUpdate({ _id: userId }, { $set: { online: false } });
 

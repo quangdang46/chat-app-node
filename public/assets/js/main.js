@@ -1312,7 +1312,7 @@ $(document).ready(function () {
           });
 
           const data = response.data;
-          console.log(data)
+          console.log(response);
           const is_sender = data.sender_id._id == idSender;
           $(".chat-group-container").append(
             templateGroupChat({
@@ -1323,7 +1323,19 @@ $(document).ready(function () {
               idMessGroup: data._id,
             })
           );
+          // emit new chat
+          const { chat, currentUser } = response;
+          socket.emit("client-send-group-message", { chat, currentUser });
+        } else {
+          $.toast({
+            heading: "Error",
+            text: response.message,
+            showHideTransition: "fade",
+            icon: "error",
+            position: "top-right",
+          });
         }
+        $(".group-chat-input").val("");
       },
       error: function (error) {
         $.toast({
@@ -1337,5 +1349,24 @@ $(document).ready(function () {
     });
   });
 
-  $(".chat-input").val("");
+  $(".group-chat-input").val("");
+
+  // server-load-group-chat
+  socket.on("server-load-group-chat", (data) => {
+    const idUser = $(".idUser").val();
+    const idGroup = $(".idGroupChat").val();
+    const { chat, currentUser } = data;
+    if (chat.group_id == idGroup) {
+      const is_sender = chat.sender_id == idUser;
+      $(".chat-group-container").append(
+        templateGroupChat({
+          user: currentUser,
+          message: chat.message,
+          is_sender,
+          time: formatTime(chat.createdAt),
+          idMessGroup: chat._id,
+        })
+      );
+    }
+  });
 });
