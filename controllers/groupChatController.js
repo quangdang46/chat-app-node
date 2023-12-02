@@ -43,7 +43,13 @@ class groupChatController {
         chats,
         success: true,
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: "Internal server error",
+        success: false,
+      });
+    }
   }
 
   static async deleteGroupMessage(req, res) {
@@ -55,6 +61,30 @@ class groupChatController {
         success: true,
       });
     } catch (error) {}
+  }
+
+  static async updateGroupMessage(req, res) {
+    try {
+      const { idGroupChat, message } = req.body;
+      await GroupChat.findByIdAndUpdate(
+        { _id: idGroupChat },
+        {
+          $set: {
+            message,
+          },
+        }
+      );
+      res.status(200).json({
+        message: "Update message successfully",
+        success: true,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: "Internal server error",
+        success: false,
+      });
+    }
   }
 }
 

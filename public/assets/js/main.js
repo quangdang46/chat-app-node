@@ -1448,4 +1448,61 @@ $(document).ready(function () {
   socket.on("server-delete-group-chat", (idChat) => {
     $(`li[data-idMessGroupChat=${idChat}]`).remove();
   });
+
+  // edit chat group /////
+
+  // edit chat
+  $(document).on("click", ".button-edit-group-chat", function (e) {
+    e.preventDefault();
+    const idGroupChat = $(this).attr("data-idMessGroupChat");
+    $(".idChatGroupEdit").val(idGroupChat);
+
+    const message = $(
+      `li[data-idMessGroupChat=${idGroupChat}] .message-data`
+    ).text();
+    $("#text-edit-group-chat").val(message.trim());
+  });
+
+  $(".btn-edit-group-chat").click(function (e) {
+    e.preventDefault();
+    const idGroupChat = $(".idChatGroupEdit").val();
+    const message = $("#text-edit-group-chat").val();
+    $.ajax({
+      type: "POST",
+      url: "/update-group-message",
+      dataType: "json",
+      data: { idGroupChat, message },
+      success: function (response) {
+        $(`li[data-idMessGroupChat=${idGroupChat}] .message-data`).text(
+          message
+        );
+        $("#editGroupChatModal").modal("hide");
+
+        $.toast({
+          heading: "Success",
+          text: response.message,
+          showHideTransition: "slide",
+          icon: "success",
+          position: "top-right",
+        });
+
+        // emit edit chat group
+        socket.emit("client-edit-group-chat", { idGroupChat, message });
+      },
+      error: function (error) {
+        $.toast({
+          heading: "Error",
+          text: error.responseJSON.message,
+          showHideTransition: "fade",
+          icon: "error",
+          position: "top-right",
+        });
+      },
+    });
+  });
+
+  // server-edit-group-chat
+  socket.on("server-edit-group-chat", ({ idGroupChat, message }) => {
+    $(`li[data-idMessGroupChat=${idGroupChat}] .message-data`).text(message);
+  });
 });
